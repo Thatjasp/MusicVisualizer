@@ -1,0 +1,38 @@
+#ifndef GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#endif
+#ifndef WINDOW_GL_H
+#define WINDOW_GL_H
+#include <string>
+
+namespace GlLibrary {
+class WindowGl {
+public:
+  WindowGl(int width, int height, std::string title,
+           GLFWmonitor *monitor = NULL, GLFWwindow *share = NULL);
+
+  WindowGl(const WindowGl &other);
+
+  GLFWwindow *getRawPointer();
+  void makeContextCurrent();
+  void swapBuffer();
+  bool windowShouldClose();
+  void viewPortArea(int x, int y, int width, int height);
+
+  int getWidth() const;
+  int getHeight() const;
+  std::string getTitle() const;
+  ~WindowGl();
+
+private:
+  GLFWwindow *mp_window;
+  int m_width;
+  int m_height;
+  std::string m_title;
+};
+
+} // namespace GlLibrary
+
+#endif
