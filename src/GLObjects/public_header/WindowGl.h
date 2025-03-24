@@ -23,6 +23,11 @@ public:
 
   int getWidth() const;
   int getHeight() const;
+  int getX() const;
+  int getY() const;
+
+  WindowGl &operator=(const WindowGl &other);
+
   std::string getTitle() const;
   ~WindowGl();
 
@@ -30,6 +35,8 @@ private:
   GLFWwindow *mp_window;
   int m_width;
   int m_height;
+  int m_x;
+  int m_y;
   std::string m_title;
 };
 

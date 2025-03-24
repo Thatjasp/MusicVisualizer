@@ -17,7 +17,8 @@ set(PUBLIC_HEADER_FILES
 )
 
 set(${PROJECT_NAME}_SOURCE_FILES 
-	./source/MainWindow.cpp)
+	./source/MainWindow.cpp
+	./source/WindowGl.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOURCE_FILES})
 

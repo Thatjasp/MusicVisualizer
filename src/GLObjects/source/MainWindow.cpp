@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "WindowGl.h"
 #include <math.h>
 // Vertex Shader source code
 const char *vertexShaderSource =
@@ -33,6 +34,8 @@ MainWindow::MainWindow(int width, int height, std::string title,
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
   // Adds the Shader source to the Vertex Shader
+  // Gluint shaderId, Glsizei num of files, char** array of source text, int*
+  // size of respective text
   glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 
   // Compiles The shader

@@ -1,4 +1,5 @@
 #include "WindowGl.h"
+#include <GLFW/glfw3.h>
 
 namespace GlLibrary {
 
@@ -25,9 +26,40 @@ WindowGl::WindowGl(int width, int height, std::string title,
 }
 
 WindowGl::WindowGl(const WindowGl &other)
-    : m_width(other.getWidth()), m_height(other.getHeight()) {}
+    : m_width(other.getWidth()), m_height(other.getHeight()),
+      m_title(other.getTitle()) {
+  if (!glfwInit()) {
+    // probably return error
+    return;
+  }
+  glfwDestroyWindow(mp_window);
+
+  mp_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
+
+  glfwSetWindowPos(mp_window, other.getX(), other.getY());
+}
+
+WindowGl &WindowGl::operator=(const WindowGl &other) {
+  glfwInit();
+  glfwDestroyWindow(mp_window);
+
+  glfwSetWindowPos(mp_window, other.getX(), other.getY());
+
+  return *this;
+}
+
 int WindowGl::getWidth() const { return m_width; }
 int WindowGl::getHeight() const { return m_height; }
+int WindowGl::getX() const {
+  int x;
+  glfwGetWindowPos(mp_window, &x, NULL);
+  return x;
+}
+int WindowGl::getY() const {
+  int y;
+  glfwGetWindowPos(mp_window, NULL, &y);
+  return y;
+}
 
 std::string WindowGl::getTitle() const { return m_title; }
 void WindowGl::swapBuffer() {
