@@ -7,10 +7,10 @@
 
 namespace GlLibrary {
 class ShaderProgram {
-  void attachShader(Shader shader);
-  void linkShader();
+    void attachShader(Shader shader);
+    void linkShader();
 
 private:
-  GLuint m_shaderProgramID;
+    GLuint m_shaderProgramID;
 };
 } // namespace GlLibrary

@@ -7,7 +7,8 @@
 #include <math.h>
 #include <memory>
 
-int main() {
-  auto f = std::make_unique<MainWindow>(800, 800, "Bruhhhh");
-  return 0;
+int main()
+{
+    auto f = std::make_unique<MainWindow>(800, 800, "Bruhhhh");
+    return 0;
 }

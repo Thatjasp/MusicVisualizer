@@ -12,15 +12,15 @@ namespace GlLibrary {
 
 class Shader {
 public:
-  void addShaderSource(std::string);
-  void addShaderSourceFile(std::filesystem::path);
-  void addShaderSourceFile(std::vector<std::filesystem::path>);
-  void compileShader();
-  GLuint getShaderId();
+    void addShaderSource(std::string);
+    void addShaderSourceFile(std::filesystem::path);
+    void addShaderSourceFile(std::vector<std::filesystem::path>);
+    void compileShader();
+    GLuint getShaderId();
 
 protected:
-  std::string getSourceFileStr(std::filesystem::path path);
-  GLuint m_shaderId;
+    std::string getSourceFileStr(std::filesystem::path path);
+    GLuint m_shaderId;
 };
 } // namespace GlLibrary
 #endif

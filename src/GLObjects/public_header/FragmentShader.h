@@ -2,6 +2,6 @@
 
 namespace GlLibrary {
 class FragmentShader : public Shader {
-  FragmentShader();
+    FragmentShader();
 };
 } // namespace GlLibrary

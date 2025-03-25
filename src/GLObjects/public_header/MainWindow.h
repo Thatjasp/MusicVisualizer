@@ -11,13 +11,13 @@
 
 class MainWindow {
 public:
-  MainWindow(int width, int height, std::string title,
-             GLFWmonitor *monitor = NULL, GLFWwindow *share = NULL);
+    MainWindow(int width, int height, std::string title,
+        GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 
-  ~MainWindow();
+    ~MainWindow();
 
 private:
-  std::unique_ptr<GlLibrary::WindowGl> mp_windowGl;
+    std::unique_ptr<GlLibrary::WindowGl> mp_windowGl;
 };
 
 #endif
