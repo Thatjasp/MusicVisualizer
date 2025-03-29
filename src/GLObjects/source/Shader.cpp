@@ -41,5 +41,13 @@ std::string Shader::getSourceFileStr(std::filesystem::path path)
     sourceFileStream.close();
     return ss.str();
 }
+GLuint Shader::getShaderId()
+{
+    return m_shaderId;
+}
+Shader::~Shader()
+{
+    glDeleteShader(m_shaderId);
+}
 
 } // namespace GlLibrary

@@ -17,6 +17,7 @@ public:
     void addShaderSourceFile(std::vector<std::filesystem::path>);
     void compileShader();
     GLuint getShaderId();
+    ~Shader();
 
 protected:
     std::string getSourceFileStr(std::filesystem::path path);

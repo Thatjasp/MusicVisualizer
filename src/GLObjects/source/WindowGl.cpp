@@ -1,6 +1,7 @@
 #include "WindowGl.h"
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 namespace GlLibrary {
 
 WindowGl::WindowGl(int width, int height, std::string title,

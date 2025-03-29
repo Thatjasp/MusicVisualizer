@@ -7,8 +7,11 @@
 
 namespace GlLibrary {
 class ShaderProgram {
-    void attachShader(Shader shader);
+public:
+    ShaderProgram();
+    void attachShader(Shader& shader);
     void linkShader();
+    GLuint shaderProgramId();
 
 private:
     GLuint m_shaderProgramID;
