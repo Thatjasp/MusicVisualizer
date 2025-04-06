@@ -3,22 +3,7 @@
 #include "ShaderProgram.h"
 #include "VertexShader.h"
 #include "WindowGl.h"
-#include <iostream>
 #include <math.h>
-// Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-// Fragment Shader source code
-const char* fragmentShaderSource = "#version 330 core\n"
-                                   "out vec4 FragColor;\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-                                   "}\n\0";
 MainWindow::MainWindow(int width, int height, std::string title,
     GLFWmonitor* monitor, GLFWwindow* share)
 {
@@ -42,27 +27,25 @@ MainWindow::MainWindow(int width, int height, std::string title,
         GlLibrary::VertexShader vertexShader;
         GlLibrary::FragmentShader fragmentShader;
 
-        vertexShader.addShaderSource(std::string(vertexShaderSource));
-        vertexShader.compileShader();
-
-        fragmentShader.addShaderSource(std::string(fragmentShaderSource));
+        //        fragmentShader.addShaderSource(std::string(fragmentShaderSource));
         fragmentShader.compileShader();
+
+        //       vertexShader.addShaderSource(std::string(vertexShaderSource));
+        vertexShader.compileShader();
 
         shaderProgram.attachShader(vertexShader);
         shaderProgram.attachShader(fragmentShader);
 
         shaderProgram.linkShader();
+        shaderProgram.validateProgram();
     }
 
-    float positions[6] = {
-        -0.5f, -0.5f,
-        0.0f, 0.5f,
-        0.5f, -0.5f
-    };
+    GLfloat positions[6] = { -0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f };
     // Buffers in OpenGL are just buffers with bytes we specify
     GLuint bufferId;
     // this will get you n ids for n number of buffers
     glGenBuffers(1, &bufferId);
+
     // In opengl IDs are used to call any type of "Object"
 
     // this will tell opengl to choose this specific buffer
@@ -71,12 +54,41 @@ MainWindow::MainWindow(int width, int height, std::string title,
     // Reserve memory in Buffer, you will need to specify bytes.
     // using manual calculation due to working with stack and heap arrays
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    // Args,
+    // Index - what is the index of this Vertex Attribute
+    // 0 - it is the first attribute
+    //
+    // Size - How many of the specified types are there in this attribute
+    // 2 - Attribute is a position in 2D
+    //
+    // Type - Type of data in this attribute
+    // GL_FLOAT - we have floats in this pointer
+    //
+    // Normalize - depending on the attribute, we can normalize and convert it
+    // into a float this is necessary if you use some kind of int GL_FALSE - don't
+    // need to since already float
+    //
+    // Stride - the size of the Vertex
+    // sizeof(float) * 2 - currently our vertex is only a 2d position
+    // so we would just say it's 2 floats big
+    //
+    //
+    // Pointer - the offset of attribute from the start of the Vertex
+    // 0 - it's the only attribute so theres no offset
+    //
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, 0);
+    // This will enable the Vertex Attribute we want, it must be done so anything
+    // shows up
+    glEnableVertexAttribArray(0);
 
-    // We have to tell OpenGl our layout
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    shaderProgram.useProgram();
 
     while (!mp_windowGl->windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         mp_windowGl->swapBuffer();
 
         glfwPollEvents();
@@ -97,15 +109,17 @@ MainWindow::MainWindow(int width, int height, std::string title,
     //
     //    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //
-    //    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    //    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+    //    GL_STATIC_DRAW);
     //
-    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    //    glEnableVertexAttribArray(0);
+    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+    //    (void*)0); glEnableVertexAttribArray(0);
     //
     //    glBindBuffer(GL_ARRAY_BUFFER, 0);
     //    glBindVertexArray(0);
     //
-    //    // there is visual buffer and a editing buffer, this will switch the buffer to
+    //    // there is visual buffer and a editing buffer, this will switch the
+    //    buffer to
     //    // visual buffer
     //    mp_windowGl->swapBuffer();
     //

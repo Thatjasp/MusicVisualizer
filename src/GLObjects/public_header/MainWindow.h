@@ -1,10 +1,12 @@
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
+
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #endif
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+
 #include "WindowGl.h"
 #include <memory>
 #include <string>

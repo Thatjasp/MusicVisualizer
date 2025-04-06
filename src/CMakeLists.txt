@@ -3,7 +3,6 @@ project(MusicVisualizer)
 find_package(glfw3 REQUIRED)
 find_package(glad REQUIRED)
 
-
 add_subdirectory(GLObjects)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -15,5 +14,7 @@ set(${PROJECT_NAME}_SOURCE_FILES ./source/main.cpp)
 
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} glfw opengl::opengl glad::glad GLObjects)
+target_include_directories(${PROJECT_NAME} PUBLIC ${OPENGL_INCLUDE_DIR})
+
+target_link_libraries(${PROJECT_NAME} glfw glad::glad GLObjects)
 

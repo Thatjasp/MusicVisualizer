@@ -1,10 +1,12 @@
+#ifndef WINDOW_GL_H
+#define WINDOW_GL_H
+
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #endif
-#ifndef WINDOW_GL_H
-#define WINDOW_GL_H
+
 #include <string>
 
 namespace GlLibrary {
@@ -41,5 +43,4 @@ private:
 };
 
 } // namespace GlLibrary
-
 #endif

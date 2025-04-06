@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <iterator>
 
 namespace GlLibrary {
@@ -31,7 +32,23 @@ void Shader::addShaderSourceFile(
         NULL);
 }
 
-void Shader::compileShader() { glCompileShader(m_shaderId); }
+void Shader::compileShader()
+{
+    glCompileShader(m_shaderId);
+    // TODO: Error Handling
+    GLint result;
+    // i = wants an integer
+    // v = wants a vector/array
+    glGetShaderiv(m_shaderId, GL_COMPILE_STATUS, &result);
+
+    if (result == GL_FALSE) {
+        int length;
+        glGetShaderiv(m_shaderId, GL_INFO_LOG_LENGTH, &length);
+        char* str = (char*)alloca(length * sizeof(char));
+        glGetShaderInfoLog(m_shaderId, length, &length, str);
+        std::cerr << std::string(str) << std::endl;
+    }
+}
 
 std::string Shader::getSourceFileStr(std::filesystem::path path)
 {
@@ -41,13 +58,7 @@ std::string Shader::getSourceFileStr(std::filesystem::path path)
     sourceFileStream.close();
     return ss.str();
 }
-GLuint Shader::getShaderId()
-{
-    return m_shaderId;
-}
-Shader::~Shader()
-{
-    glDeleteShader(m_shaderId);
-}
+GLuint Shader::getShaderId() { return m_shaderId; }
+Shader::~Shader() { glDeleteShader(m_shaderId); }
 
 } // namespace GlLibrary

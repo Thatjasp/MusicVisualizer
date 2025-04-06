@@ -13,7 +13,7 @@ WindowGl::WindowGl(int width, int height, std::string title,
     // Type Hints for Glfw to understand what version it should use
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
     mp_window = glfwCreateWindow(800, 800, "Bruhhhh", NULL, NULL);
 
@@ -23,8 +23,11 @@ WindowGl::WindowGl(int width, int height, std::string title,
         return;
     }
     makeContextCurrent();
-    // Load Glad module
-    gladLoadGL();
+    // init glew
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Wack" << std::endl;
+        glfwTerminate();
+    }
 }
 
 WindowGl::WindowGl(const WindowGl& other)

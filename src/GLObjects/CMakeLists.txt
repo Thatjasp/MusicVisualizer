@@ -30,4 +30,4 @@ add_library(${PROJECT_NAME} STATIC ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOUR
 
 target_include_directories(${PROJECT_NAME} PUBLIC ./public_header/)
 
-target_link_libraries(${PROJECT_NAME} glfw opengl::opengl glad::glad)
+target_link_libraries(${PROJECT_NAME} glfw glad::glad)
