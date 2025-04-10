@@ -1,20 +1,27 @@
 #include "MainWindow.h"
 #include "FragmentShader.h"
+#include "Shader.h"
 #include "ShaderProgram.h"
 #include "VertexShader.h"
 #include "WindowGl.h"
 #include <math.h>
+// Vertex Shader source code
+const char* vertexShaderSource = "#version 330 core\n"
+                                 "layout (location = 0) in vec4 position;\n"
+                                 "void main()\n"
+                                 "{\n"
+                                 "   gl_Position = position;\n"
+                                 "}";
+// Fragment Shader source code
+const char* fragmentShaderSource = "#version 330 core\n"
+                                   "layout(location = 0) out vec4 FragColor;\n"
+                                   "void main()\n"
+                                   "{\n"
+                                   "   FragColor = vec4(0.8f, 0.0f, 0.00f, 1.0f);\n"
+                                   "}\n";
 MainWindow::MainWindow(int width, int height, std::string title,
     GLFWmonitor* monitor, GLFWwindow* share)
 {
-    // clang-format off
-    GLfloat vertices[] = {
-        -0.5, -0.5f * float(std::sqrt(3)) / 3, 0.0f,
-        0.5,  -0.5f * float(std::sqrt(3)) / 3, 0.0f,
-        0.5,  0.5f * float(std::sqrt(3)) / 3,  0.0f,
-    };
-    // clang-format on
-
     mp_windowGl = std::make_unique<GlLibrary::WindowGl>(width, height, title);
 
     mp_windowGl->viewPortArea(0, 0, 800, 800);
@@ -27,10 +34,10 @@ MainWindow::MainWindow(int width, int height, std::string title,
         GlLibrary::VertexShader vertexShader;
         GlLibrary::FragmentShader fragmentShader;
 
-        //        fragmentShader.addShaderSource(std::string(fragmentShaderSource));
+        fragmentShader.addShaderSource(std::string(fragmentShaderSource));
         fragmentShader.compileShader();
 
-        //       vertexShader.addShaderSource(std::string(vertexShaderSource));
+        vertexShader.addShaderSource(std::string(vertexShaderSource));
         vertexShader.compileShader();
 
         shaderProgram.attachShader(vertexShader);
@@ -39,8 +46,15 @@ MainWindow::MainWindow(int width, int height, std::string title,
         shaderProgram.linkShader();
         shaderProgram.validateProgram();
     }
+    // clang-format off
+    GLfloat positions[8] = { 
+        -0.5f, -0.5f, // 0
+        0.5f, 0.5f, // 1
+        0.5f, -0.5f, // 2
+        -0.5f, 0.5f// 3
+    };
+    // clang-format on
 
-    GLfloat positions[6] = { -0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f };
     // Buffers in OpenGL are just buffers with bytes we specify
     GLuint bufferId;
     // this will get you n ids for n number of buffers
@@ -53,7 +67,8 @@ MainWindow::MainWindow(int width, int height, std::string title,
 
     // Reserve memory in Buffer, you will need to specify bytes.
     // using manual calculation due to working with stack and heap arrays
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
+
     // Args,
     // Index - what is the index of this Vertex Attribute
     // 0 - it is the first attribute
@@ -83,12 +98,23 @@ MainWindow::MainWindow(int width, int height, std::string title,
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    unsigned int indices[] = {
+        0, 1, 2,
+        0, 1, 3
+    };
+    // ibo - indexBufferObject
+    GLuint ibo;
+    glGenBuffers(1, &ibo);
+
+    // ELEMENT ARRAY BUFFER
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indices, GL_STATIC_DRAW);
+
     shaderProgram.useProgram();
 
     while (!mp_windowGl->windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT);
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         mp_windowGl->swapBuffer();
 
         glfwPollEvents();

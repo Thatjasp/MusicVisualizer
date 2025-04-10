@@ -54,7 +54,6 @@ std::string Shader::getSourceFileStr(std::filesystem::path path)
 {
     std::ifstream sourceFileStream(path.string());
     std::stringstream ss;
-    ss << sourceFileStream.rdbuf();
     sourceFileStream.close();
     return ss.str();
 }
