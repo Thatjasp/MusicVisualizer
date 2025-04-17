@@ -10,7 +10,7 @@ class ExampleRecipe(ConanFile):
     export_sources = "src/*"
 
     def requirements(self):
-        self.requires("glad/0.1.36")
+        self.requires("glew/2.2.0")
         self.requires("glfw/3.4")
         self.requires("opengl/system")
 
