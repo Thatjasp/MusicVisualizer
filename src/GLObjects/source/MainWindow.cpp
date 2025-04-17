@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "FragmentShader.h"
 #include "Shader.h"
+#include "ShaderManager.h"
 #include "ShaderProgram.h"
 #include "VertexShader.h"
 #include "WindowGl.h"
@@ -31,17 +32,21 @@ MainWindow::MainWindow(int width, int height, std::string title,
     // Reference to Shader
     //    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     {
-        GlLibrary::VertexShader vertexShader;
-        GlLibrary::FragmentShader fragmentShader;
+        //        GlLibrary::VertexShader vertexShader;
+        //       GlLibrary::FragmentShader fragmentShader;
 
-        fragmentShader.addShaderSource(std::string(fragmentShaderSource));
-        fragmentShader.compileShader();
+        //      fragmentShader.addShaderSource(std::string(fragmentShaderSource));
+        //     fragmentShader.compileShader();
 
-        vertexShader.addShaderSource(std::string(vertexShaderSource));
-        vertexShader.compileShader();
+        //    vertexShader.addShaderSource(std::string(vertexShaderSource));
+        //   vertexShader.compileShader();
+        GlLibrary::ShaderManager shaderManager;
+        shaderManager.importShaders("build/Debug/res/shader/fragment.glsl");
 
-        shaderProgram.attachShader(vertexShader);
-        shaderProgram.attachShader(fragmentShader);
+        shaderManager.compileShaders();
+
+        shaderProgram.attachShader(shaderManager.getFragmentShader());
+        shaderProgram.attachShader(shaderManager.getVertexShader());
 
         shaderProgram.linkShader();
         shaderProgram.validateProgram();

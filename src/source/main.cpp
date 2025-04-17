@@ -1,7 +1,7 @@
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #endif
 #include "MainWindow.h"
 #include <math.h>

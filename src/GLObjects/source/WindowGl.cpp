@@ -24,7 +24,7 @@ WindowGl::WindowGl(int width, int height, std::string title,
     }
     makeContextCurrent();
     // init glew
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (glewInit() != GLEW_OK) {
         std::cerr << "Wack" << std::endl;
         glfwTerminate();
     }
