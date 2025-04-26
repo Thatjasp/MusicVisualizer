@@ -23,8 +23,10 @@ void ShaderManager::importShaders(std::filesystem::path path)
     while (std::getline(sourceFileStream, line)) {
         if (line.find("#shader vertex") != std::string::npos) {
             currentShaderEnum = ShaderType::VertexShader;
+            continue;
         } else if (line.find("#shader fragment") != std::string::npos) {
             currentShaderEnum = ShaderType::FragmentShader;
+            continue;
         }
 
         if (currentShaderEnum != InvalidShader) {

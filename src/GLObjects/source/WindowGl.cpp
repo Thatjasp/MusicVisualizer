@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <utility>
 namespace GlLibrary {
 
 WindowGl::WindowGl(int width, int height, std::string title,
@@ -13,7 +14,7 @@ WindowGl::WindowGl(int width, int height, std::string title,
     // Type Hints for Glfw to understand what version it should use
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     mp_window = glfwCreateWindow(800, 800, "Bruhhhh", NULL, NULL);
 
@@ -23,6 +24,7 @@ WindowGl::WindowGl(int width, int height, std::string title,
         return;
     }
     makeContextCurrent();
+    glfwSwapInterval(1);
     // init glew
     if (glewInit() != GLEW_OK) {
         std::cerr << "Wack" << std::endl;
@@ -30,34 +32,34 @@ WindowGl::WindowGl(int width, int height, std::string title,
     }
 }
 
-WindowGl::WindowGl(const WindowGl& other)
-    : m_width(other.getWidth())
-    , m_height(other.getHeight())
-    , m_title(other.getTitle())
+WindowGl::WindowGl(WindowGl&& other) noexcept
+    : mp_window(std::exchange(other.mp_window, nullptr))
+    , m_width(std::exchange(other.m_width, 0))
+    , m_height(std::exchange(other.m_height, 0))
+    , m_x(std::exchange(other.m_x, 0))
+    , m_y(std::exchange(other.m_y, 0))
+    , m_title(std::exchange(other.m_title, NULL))
 {
-    if (!glfwInit()) {
-        // probably return error
-        return;
-    }
-    glfwDestroyWindow(mp_window);
-
-    mp_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
-
-    glfwSetWindowPos(mp_window, other.getX(), other.getY());
 }
-
-WindowGl& WindowGl::operator=(const WindowGl& other)
+WindowGl& WindowGl::operator=(WindowGl&& other)
 {
-    glfwInit();
-    glfwDestroyWindow(mp_window);
-
-    glfwSetWindowPos(mp_window, other.getX(), other.getY());
-
+    std::swap(mp_window, other.mp_window);
+    std::swap(m_width, other.m_width);
+    std::swap(m_height, other.m_height);
+    std::swap(m_x, other.m_x);
+    std::swap(m_y, other.m_y);
+    std::swap(m_title, other.m_title);
     return *this;
 }
 
-int WindowGl::getWidth() const { return m_width; }
-int WindowGl::getHeight() const { return m_height; }
+int WindowGl::getWidth() const
+{
+    return m_width;
+}
+int WindowGl::getHeight() const
+{
+    return m_height;
+}
 int WindowGl::getX() const
 {
     int x;
@@ -71,7 +73,10 @@ int WindowGl::getY() const
     return y;
 }
 
-std::string WindowGl::getTitle() const { return m_title; }
+std::string WindowGl::getTitle() const
+{
+    return m_title;
+}
 void WindowGl::swapBuffer()
 {
     // Back Buffer and Front Buffer
@@ -89,9 +94,15 @@ void WindowGl::viewPortArea(int x, int y, int width, int height)
     glViewport(x, y, width, height);
 }
 
-void WindowGl::makeContextCurrent() { glfwMakeContextCurrent(mp_window); }
+void WindowGl::makeContextCurrent()
+{
+    glfwMakeContextCurrent(mp_window);
+}
 
-bool WindowGl::windowShouldClose() { return glfwWindowShouldClose(mp_window); }
+bool WindowGl::windowShouldClose()
+{
+    return glfwWindowShouldClose(mp_window);
+}
 
 WindowGl::~WindowGl()
 {

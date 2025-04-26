@@ -13,11 +13,17 @@ namespace GlLibrary {
 class ShaderProgram {
 public:
     ShaderProgram();
+    ShaderProgram(const ShaderProgram&) = delete;
+    ShaderProgram& operator=(ShaderProgram&) = delete;
+
+    ShaderProgram(ShaderProgram&& other);
+    ShaderProgram& operator=(ShaderProgram&& other);
     void attachShader(Shader& shader);
     void linkShader();
     void validateProgram();
     void useProgram();
     GLuint shaderProgramId();
+    ~ShaderProgram();
 
 private:
     GLuint m_shaderProgramID;

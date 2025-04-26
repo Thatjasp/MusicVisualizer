@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(PRIVATE_HEADER_FILES
+	./private_header/ErrorMacros.h
+)
 set(PUBLIC_HEADER_FILES 
 	#./public_header/VAO.h
 	#./public_header/VBO.h
@@ -28,8 +31,8 @@ set(${PROJECT_NAME}_SOURCE_FILES
 	./source/ShaderManager.cpp
 	./source/ShaderProgram.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${PRIVATE_HEADER_FILES} ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOURCE_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ./public_header/)
+target_include_directories(${PROJECT_NAME} PUBLIC ./public_header/ PRIVATE ./private_header/)
 
 target_link_libraries(${PROJECT_NAME} glfw GLEW::GLEW)

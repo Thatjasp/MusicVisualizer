@@ -13,7 +13,6 @@ namespace GlLibrary {
 class ShaderManager {
 public:
     void importShaders(std::filesystem::path path);
-    // TODO: Rule of 5
     FragmentShader& getFragmentShader();
     VertexShader& getVertexShader();
     void compileShaders();

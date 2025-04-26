@@ -1,25 +1,9 @@
 #include "MainWindow.h"
-#include "FragmentShader.h"
-#include "Shader.h"
+#include "ErrorMacros.h"
 #include "ShaderManager.h"
 #include "ShaderProgram.h"
-#include "VertexShader.h"
 #include "WindowGl.h"
 #include <math.h>
-// Vertex Shader source code
-const char* vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec4 position;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   gl_Position = position;\n"
-                                 "}";
-// Fragment Shader source code
-const char* fragmentShaderSource = "#version 330 core\n"
-                                   "layout(location = 0) out vec4 FragColor;\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "   FragColor = vec4(0.8f, 0.0f, 0.00f, 1.0f);\n"
-                                   "}\n";
 MainWindow::MainWindow(int width, int height, std::string title,
     GLFWmonitor* monitor, GLFWwindow* share)
 {
@@ -29,17 +13,7 @@ MainWindow::MainWindow(int width, int height, std::string title,
 
     GlLibrary::ShaderProgram shaderProgram;
 
-    // Reference to Shader
-    //    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     {
-        //        GlLibrary::VertexShader vertexShader;
-        //       GlLibrary::FragmentShader fragmentShader;
-
-        //      fragmentShader.addShaderSource(std::string(fragmentShaderSource));
-        //     fragmentShader.compileShader();
-
-        //    vertexShader.addShaderSource(std::string(vertexShaderSource));
-        //   vertexShader.compileShader();
         GlLibrary::ShaderManager shaderManager;
         shaderManager.importShaders("build/Debug/res/shader/fragment.glsl");
 
@@ -59,6 +33,9 @@ MainWindow::MainWindow(int width, int height, std::string title,
         -0.5f, 0.5f// 3
     };
     // clang-format on
+    GLuint vaoId;
+    glGenVertexArrays(1, &vaoId);
+    glBindVertexArray(vaoId);
 
     // Buffers in OpenGL are just buffers with bytes we specify
     GLuint bufferId;
@@ -74,34 +51,15 @@ MainWindow::MainWindow(int width, int height, std::string title,
     // using manual calculation due to working with stack and heap arrays
     glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
-    // Args,
-    // Index - what is the index of this Vertex Attribute
-    // 0 - it is the first attribute
-    //
-    // Size - How many of the specified types are there in this attribute
-    // 2 - Attribute is a position in 2D
-    //
-    // Type - Type of data in this attribute
-    // GL_FLOAT - we have floats in this pointer
-    //
-    // Normalize - depending on the attribute, we can normalize and convert it
-    // into a float this is necessary if you use some kind of int GL_FALSE - don't
-    // need to since already float
-    //
-    // Stride - the size of the Vertex
-    // sizeof(float) * 2 - currently our vertex is only a 2d position
-    // so we would just say it's 2 floats big
-    //
-    //
-    // Pointer - the offset of attribute from the start of the Vertex
-    // 0 - it's the only attribute so theres no offset
-    //
+    // Specifiying the layout will connect our buffer and Vertex Array together
+
+    // Attrib Index, Size of Type, Normalize, Stride, Offset of the First Component
+    // Stride - the offset between each of specified vertex attribute
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, 0);
+
     // This will enable the Vertex Attribute we want, it must be done so anything
     // shows up
     glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     unsigned int indices[] = {
         0, 1, 2,
@@ -117,58 +75,37 @@ MainWindow::MainWindow(int width, int height, std::string title,
 
     shaderProgram.useProgram();
 
+    int location = glGetUniformLocation(shaderProgram.shaderProgramId(), "u_Color");
+    float red = 0.05f;
+    float increment = 0.05f;
+
+    // Unbind to use example of changing state in while loop
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     while (!mp_windowGl->windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        // Bind Shader
+        shaderProgram.useProgram();
+        glUniform4f(location, red, .2f, .4f, 1.0f);
+        // Bind Vertex Array Object, this will set up our layout
+        glBindVertexArray(vaoId);
+        // Bind Index Buffer
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        if (red > 1.0f) {
+            increment = -0.05;
+        } else if (red < 0.0f) {
+            increment = 0.05;
+        }
+        red += increment;
+
         mp_windowGl->swapBuffer();
 
         glfwPollEvents();
     }
-    //    // vertex buffer object
-    //    GLuint VBO;
-    //
-    //    // vertex array object | has references to VBOs
-    //    // VAOs have metadata about the vertexBufferObjects,
-    //    GLuint VAO;
-    //
-    //    // Generate where the Vector array object will be on the heap
-    //    glGenVertexArrays(1, &VAO);
-    //    // Generates the buffe for the vertex buffer object
-    //    glGenBuffers(1, &VBO);
-    //    // Bind, This will assign the target
-    //    glBindVertexArray(VAO);
-    //
-    //    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //
-    //    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-    //    GL_STATIC_DRAW);
-    //
-    //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-    //    (void*)0); glEnableVertexAttribArray(0);
-    //
-    //    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //    glBindVertexArray(0);
-    //
-    //    // there is visual buffer and a editing buffer, this will switch the
-    //    buffer to
-    //    // visual buffer
-    //    mp_windowGl->swapBuffer();
-    //
-    //    while (!mp_windowGl->windowShouldClose()) {
-    //        // Color we want to change
-    //        glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-    //        // Cleans the Back buffer and assigns the color to the back buffer
-    //        glClear(GL_COLOR_BUFFER_BIT);
-    //        glUseProgram(shaderProgram.shaderProgramId());
-    //        glBindVertexArray(VAO);
-    //        glDrawArrays(GL_TRIANGLES, 0, 3);
-    //        mp_windowGl->swapBuffer();
-    //
-    //        glfwPollEvents();
-    //    }
-    //
-    //    glDeleteVertexArrays(1, &VAO);
-    //    glDeleteBuffers(1, &VBO);
 }
 
 MainWindow::~MainWindow() { }

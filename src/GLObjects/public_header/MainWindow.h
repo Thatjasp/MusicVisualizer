@@ -6,7 +6,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #endif
-
 #include "WindowGl.h"
 #include <memory>
 #include <string>

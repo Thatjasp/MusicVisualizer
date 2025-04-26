@@ -15,7 +15,13 @@ public:
     WindowGl(int width, int height, std::string title,
         GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 
-    WindowGl(const WindowGl& other);
+    // Rule of 5 will not work due to Gl shouldn't be able to copy
+    WindowGl(const WindowGl&) = delete;
+    WindowGl& operator=(const WindowGl&) = delete;
+
+    WindowGl(WindowGl&& other) noexcept;
+
+    WindowGl& operator=(WindowGl&& other);
 
     GLFWwindow* getRawPointer();
     void makeContextCurrent();
@@ -27,8 +33,6 @@ public:
     int getHeight() const;
     int getX() const;
     int getY() const;
-
-    WindowGl& operator=(const WindowGl& other);
 
     std::string getTitle() const;
     ~WindowGl();

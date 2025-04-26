@@ -14,7 +14,14 @@ namespace GlLibrary {
 
 class Shader {
 public:
-    // TODO: Rule of Five
+    Shader() = default;
+
+    Shader(const Shader&) = delete;
+    Shader& operator=(Shader&) = delete;
+
+    Shader(Shader&& other);
+    Shader& operator=(Shader&& other);
+
     void addShaderSource(std::string);
     void addShaderSourceFile(std::filesystem::path);
     void addShaderSourceFile(std::vector<std::filesystem::path>);

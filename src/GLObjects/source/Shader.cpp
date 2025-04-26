@@ -4,8 +4,18 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <utility>
 
 namespace GlLibrary {
+Shader::Shader(Shader&& other)
+    : m_shaderId(std::exchange(other.m_shaderId, 0))
+{
+}
+Shader& Shader::operator=(Shader&& other)
+{
+    std::swap(m_shaderId, other.m_shaderId);
+    return *this;
+}
 void Shader::addShaderSource(std::string sourceCodeStr)
 {
     const char* sourceCode = sourceCodeStr.c_str();
@@ -57,7 +67,13 @@ std::string Shader::getSourceFileStr(std::filesystem::path path)
     sourceFileStream.close();
     return ss.str();
 }
-GLuint Shader::getShaderId() { return m_shaderId; }
-Shader::~Shader() { glDeleteShader(m_shaderId); }
+GLuint Shader::getShaderId()
+{
+    return m_shaderId;
+}
+Shader::~Shader()
+{
+    glDeleteShader(m_shaderId);
+}
 
 } // namespace GlLibrary
