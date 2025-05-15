@@ -1,7 +1,9 @@
 #include "MainWindow.h"
 #include "ErrorMacros.h"
+#include "IndexBuffer.h"
 #include "ShaderManager.h"
 #include "ShaderProgram.h"
+#include "VertexBuffer.h"
 #include "WindowGl.h"
 #include <math.h>
 MainWindow::MainWindow(int width, int height, std::string title,
@@ -25,6 +27,7 @@ MainWindow::MainWindow(int width, int height, std::string title,
         shaderProgram.linkShader();
         shaderProgram.validateProgram();
     }
+
     // clang-format off
     GLfloat positions[8] = { 
         -0.5f, -0.5f, // 0
@@ -33,23 +36,26 @@ MainWindow::MainWindow(int width, int height, std::string title,
         -0.5f, 0.5f// 3
     };
     // clang-format on
+
     GLuint vaoId;
     glGenVertexArrays(1, &vaoId);
     glBindVertexArray(vaoId);
 
     // Buffers in OpenGL are just buffers with bytes we specify
-    GLuint bufferId;
+    // GLuint bufferId;
     // this will get you n ids for n number of buffers
-    glGenBuffers(1, &bufferId);
+    // glGenBuffers(1, &bufferId);
 
     // In opengl IDs are used to call any type of "Object"
 
     // this will tell opengl to choose this specific buffer
-    glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+    // glBindBuffer(GL_ARRAY_BUFFER, bufferId);
 
     // Reserve memory in Buffer, you will need to specify bytes.
     // using manual calculation due to working with stack and heap arrays
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
+    GlLibrary::VertexBuffer vertexBuffer(positions, 8 * sizeof(float));
+    vertexBuffer.Bind();
+    // glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
     // Specifiying the layout will connect our buffer and Vertex Array together
 
@@ -65,25 +71,34 @@ MainWindow::MainWindow(int width, int height, std::string title,
         0, 1, 2,
         0, 1, 3
     };
-    // ibo - indexBufferObject
-    GLuint ibo;
-    glGenBuffers(1, &ibo);
 
-    // ELEMENT ARRAY BUFFER
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indices, GL_STATIC_DRAW);
+    GlLibrary::IndexBuffer indexBuffer(indices, 6);
+    indexBuffer.Bind();
+
+    // ibo - indexBufferObject
+    // GLuint ibo;
+    // glGenBuffers(1, &ibo);
+
+    // // ELEMENT ARRAY BUFFER
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indices, GL_STATIC_DRAW);
 
     shaderProgram.useProgram();
 
     int location = glGetUniformLocation(shaderProgram.shaderProgramId(), "u_Color");
+
     float red = 0.05f;
     float increment = 0.05f;
 
     // Unbind to use example of changing state in while loop
     glBindVertexArray(0);
     glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    //   indexBuffer.Unbind();
+    //  vertexBuffer.Unbind();
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     while (!mp_windowGl->windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT);
         // Bind Shader
@@ -94,7 +109,7 @@ MainWindow::MainWindow(int width, int height, std::string title,
         // Bind Index Buffer
         // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        GlCall(glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
         if (red > 1.0f) {
             increment = -0.05;
         } else if (red < 0.0f) {

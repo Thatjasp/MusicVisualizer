@@ -13,6 +13,8 @@ set(PRIVATE_HEADER_FILES
 set(PUBLIC_HEADER_FILES 
 	#./public_header/VAO.h
 	#./public_header/VBO.h
+	./public_header/VertexBuffer.h
+	./public_header/IndexBuffer.h
 	./public_header/WindowGl.h
 	./public_header/MainWindow.h
 	./public_header/VertexShader.h
@@ -23,6 +25,8 @@ set(PUBLIC_HEADER_FILES
 )
 
 set(${PROJECT_NAME}_SOURCE_FILES 
+	./source/VertexBuffer.cpp
+	./source/IndexBuffer.cpp
 	./source/MainWindow.cpp
 	./source/WindowGl.cpp
 	./source/VertexShader.cpp

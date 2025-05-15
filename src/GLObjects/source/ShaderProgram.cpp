@@ -39,4 +39,9 @@ void ShaderProgram::useProgram()
 {
     glUseProgram(m_shaderProgramID);
 }
+ShaderProgram::~ShaderProgram()
+{
+    glDeleteProgram(m_shaderProgramID);
+}
+
 } // namespace GlLibrary
