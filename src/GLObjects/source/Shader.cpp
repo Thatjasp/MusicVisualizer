@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "ErrorMacros.h"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -19,7 +20,7 @@ Shader& Shader::operator=(Shader&& other)
 void Shader::addShaderSource(std::string sourceCodeStr)
 {
     const char* sourceCode = sourceCodeStr.c_str();
-    glShaderSource(m_shaderId, 1, &sourceCode, NULL);
+    GlCall(glShaderSource(m_shaderId, 1, &sourceCode, NULL));
 }
 
 void Shader::addShaderSourceFile(std::filesystem::path sourceCodePath)
@@ -38,24 +39,24 @@ void Shader::addShaderSourceFile(
     std::ranges::transform(
         srcCodeVec, std::back_inserter(srcCodeCharVec),
         [](std::string& str) -> const char* { return str.c_str(); });
-    glShaderSource(m_shaderId, srcCodeCharVec.size(), srcCodeCharVec.data(),
-        NULL);
+    GlCall(glShaderSource(m_shaderId, srcCodeCharVec.size(), srcCodeCharVec.data(),
+        NULL));
 }
 
 void Shader::compileShader()
 {
-    glCompileShader(m_shaderId);
+    GlCall(glCompileShader(m_shaderId));
     // TODO: Error Handling
     GLint result;
     // i = wants an integer
     // v = wants a vector/array
-    glGetShaderiv(m_shaderId, GL_COMPILE_STATUS, &result);
+    GlCall(glGetShaderiv(m_shaderId, GL_COMPILE_STATUS, &result));
 
     if (result == GL_FALSE) {
         int length;
-        glGetShaderiv(m_shaderId, GL_INFO_LOG_LENGTH, &length);
+        GlCall(glGetShaderiv(m_shaderId, GL_INFO_LOG_LENGTH, &length));
         char* str = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(m_shaderId, length, &length, str);
+        GlCall(glGetShaderInfoLog(m_shaderId, length, &length, str));
         std::cerr << std::string(str) << std::endl;
     }
 }

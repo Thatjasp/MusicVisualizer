@@ -13,12 +13,13 @@ namespace GlLibrary {
 class VertexArray {
 public:
     VertexArray();
-    void addBuffer(VertexBuffer& buffer, const VertexBufferLayout layout);
+    void addBuffer(VertexBuffer& buffer, const VertexBufferLayout& layout);
+    void enableAttribute(unsigned int index);
     void Bind();
     void Unbind();
 
 private:
-    GLuint vaoId;
+    GLuint m_vaoId;
 };
 }
 

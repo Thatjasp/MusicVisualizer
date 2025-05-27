@@ -3,9 +3,12 @@
 #include "IndexBuffer.h"
 #include "ShaderManager.h"
 #include "ShaderProgram.h"
+#include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "WindowGl.h"
 #include <math.h>
+
 MainWindow::MainWindow(int width, int height, std::string title,
     GLFWmonitor* monitor, GLFWwindow* share)
 {
@@ -37,35 +40,37 @@ MainWindow::MainWindow(int width, int height, std::string title,
     };
     // clang-format on
 
-    GLuint vaoId;
-    glGenVertexArrays(1, &vaoId);
-    glBindVertexArray(vaoId);
-
     // Buffers in OpenGL are just buffers with bytes we specify
     // GLuint bufferId;
     // this will get you n ids for n number of buffers
     // glGenBuffers(1, &bufferId);
-
-    // In opengl IDs are used to call any type of "Object"
-
+    //
+    //    // In opengl IDs are used to call any type of "Object"
+    //
     // this will tell opengl to choose this specific buffer
     // glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+    GlLibrary::VertexArray vertexArray;
 
     // Reserve memory in Buffer, you will need to specify bytes.
     // using manual calculation due to working with stack and heap arrays
     GlLibrary::VertexBuffer vertexBuffer(positions, 8 * sizeof(float));
     vertexBuffer.Bind();
+    GlLibrary::VertexBufferLayout bufferLayout;
+    bufferLayout.addVertexAttribParams<float>(2);
+
+    vertexArray.addBuffer(vertexBuffer, bufferLayout);
     // glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
     // Specifiying the layout will connect our buffer and Vertex Array together
 
     // Attrib Index, Size of Type, Normalize, Stride, Offset of the First Component
     // Stride - the offset between each of specified vertex attribute
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, 0);
+    // glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, 0);
 
     // This will enable the Vertex Attribute we want, it must be done so anything
     // shows up
-    glEnableVertexAttribArray(0);
+    // vertexArray.enableAttribute(0);
+    // glEnableVertexAttribArray(0);
 
     unsigned int indices[] = {
         0, 1, 2,
@@ -105,7 +110,7 @@ MainWindow::MainWindow(int width, int height, std::string title,
         shaderProgram.useProgram();
         glUniform4f(location, red, .2f, .4f, 1.0f);
         // Bind Vertex Array Object, this will set up our layout
-        glBindVertexArray(vaoId);
+        vertexArray.Bind();
         // Bind Index Buffer
         // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 

@@ -3,12 +3,6 @@
 #include "MainWindow.h"
 #include <vector>
 
-#ifndef GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_NONE
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#endif
-
 namespace {
 template <typename T>
 concept GlType = requires(T num) {
@@ -48,7 +42,7 @@ public:
     unsigned int getStride() const;
 
 private:
-    unsigned int m_stride;
+    unsigned int m_stride = 0;
     std::vector<VertexAttribParams> m_vertexAttribParams;
 };
 }

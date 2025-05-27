@@ -1,4 +1,5 @@
 #include "ShaderProgram.h"
+#include "ErrorMacros.h"
 #include "Shader.h"
 #include <utility>
 
@@ -19,16 +20,16 @@ ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other)
 }
 void ShaderProgram::attachShader(Shader& shader)
 {
-    glAttachShader(m_shaderProgramID, shader.getShaderId());
+    GlCall(glAttachShader(m_shaderProgramID, shader.getShaderId()));
 }
 void ShaderProgram::linkShader()
 {
-    glLinkProgram(m_shaderProgramID);
+    GlCall(glLinkProgram(m_shaderProgramID));
 }
 
 void ShaderProgram::validateProgram()
 {
-    glValidateProgram(m_shaderProgramID);
+    GlCall(glValidateProgram(m_shaderProgramID));
 }
 
 GLuint ShaderProgram::shaderProgramId()
@@ -37,11 +38,11 @@ GLuint ShaderProgram::shaderProgramId()
 }
 void ShaderProgram::useProgram()
 {
-    glUseProgram(m_shaderProgramID);
+    GlCall(glUseProgram(m_shaderProgramID));
 }
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgram(m_shaderProgramID);
+    GlCall(glDeleteProgram(m_shaderProgramID));
 }
 
 } // namespace GlLibrary

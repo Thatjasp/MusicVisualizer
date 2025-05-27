@@ -15,7 +15,6 @@ void ShaderManager::importShaders(std::filesystem::path path)
         InvalidShader
     };
 
-    std::cout << path.string() << "\n";
     std::ifstream sourceFileStream(path.string());
     std::stringstream ss[2];
     std::string line;

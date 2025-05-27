@@ -14,6 +14,8 @@ set(PUBLIC_HEADER_FILES
 	#./public_header/VAO.h
 	#./public_header/VBO.h
 	./public_header/VertexBuffer.h
+	./public_header/VertexBufferLayout.h
+	./public_header/VertexArray.h
 	./public_header/IndexBuffer.h
 	./public_header/WindowGl.h
 	./public_header/MainWindow.h
@@ -30,12 +32,14 @@ set(${PROJECT_NAME}_SOURCE_FILES
 	./source/MainWindow.cpp
 	./source/WindowGl.cpp
 	./source/VertexShader.cpp
+	./source/VertexArray.cpp
+	./source/VertexBufferLayout.cpp
 	./source/Shader.cpp
 	./source/FragmentShader.cpp
 	./source/ShaderManager.cpp
 	./source/ShaderProgram.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${PRIVATE_HEADER_FILES} ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ./public_header/ PRIVATE ./private_header/)
 
