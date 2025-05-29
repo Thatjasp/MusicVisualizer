@@ -1,6 +1,6 @@
 #include "MainWindow.h"
-#include "ErrorMacros.h"
 #include "IndexBuffer.h"
+#include "Renderer.h"
 #include "ShaderManager.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
@@ -90,31 +90,33 @@ MainWindow::MainWindow(int width, int height, std::string title,
 
     shaderProgram.useProgram();
 
-    int location = glGetUniformLocation(shaderProgram.shaderProgramId(), "u_Color");
+    shaderProgram.addUniformLocation("u_Color");
 
     float red = 0.05f;
     float increment = 0.05f;
 
     // Unbind to use example of changing state in while loop
-    glBindVertexArray(0);
-    glUseProgram(0);
+    // glBindVertexArray(0);
+    // glUseProgram(0);
 
     //   indexBuffer.Unbind();
     //  vertexBuffer.Unbind();
     // glBindBuffer(GL_ARRAY_BUFFER, 0);
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+    GlLibrary::Renderer renderer;
     while (!mp_windowGl->windowShouldClose()) {
-        glClear(GL_COLOR_BUFFER_BIT);
         // Bind Shader
+        renderer.Clear();
         shaderProgram.useProgram();
-        glUniform4f(location, red, .2f, .4f, 1.0f);
+        shaderProgram.setUniformLocation4f("u_Color", red, .2f, .4f, 1.0f);
+        renderer.Draw(vertexArray, indexBuffer, shaderProgram);
         // Bind Vertex Array Object, this will set up our layout
-        vertexArray.Bind();
+        //        vertexArray.Bind();
         // Bind Index Buffer
         // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        GlCall(glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
+        //       GlCall(glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr));
         if (red > 1.0f) {
             increment = -0.05;
         } else if (red < 0.0f) {
