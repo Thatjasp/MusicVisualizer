@@ -13,6 +13,12 @@ public:
     // TODO: Rule of 5
     IndexBuffer(const GLuint* buffer, unsigned int count);
 
+    IndexBuffer(const IndexBuffer&) = delete;
+    IndexBuffer& operator=(const IndexBuffer& other) = delete;
+
+    IndexBuffer(IndexBuffer&& other);
+    IndexBuffer& operator=(IndexBuffer&& other);
+
     void Bind() const;
     void Unbind() const;
 

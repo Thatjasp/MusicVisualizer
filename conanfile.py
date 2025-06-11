@@ -13,6 +13,7 @@ class ExampleRecipe(ConanFile):
         self.requires("glew/2.2.0")
         self.requires("glfw/3.4")
         self.requires("opengl/system")
+        self.requires("stb/cci.20240531")
 
     def layout(self):
         cmake_layout(self, src_folder="src")

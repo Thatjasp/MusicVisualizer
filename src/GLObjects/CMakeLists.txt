@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION  3.31.5)
 project(GLObjects)
 find_package(glfw3 REQUIRED)
 find_package(glew REQUIRED)
+find_package(stb REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -18,6 +19,7 @@ set(PUBLIC_HEADER_FILES
 	./public_header/VertexBufferLayout.h
 	./public_header/VertexArray.h
 	./public_header/IndexBuffer.h
+	./public_header/Texture.h
 	./public_header/WindowGl.h
 	./public_header/MainWindow.h
 	./public_header/VertexShader.h
@@ -37,6 +39,7 @@ set(${PROJECT_NAME}_SOURCE_FILES
 	./source/VertexBufferLayout.cpp
 	./source/Shader.cpp
 	./source/Renderer.cpp
+	./source/Texture.cpp
 	./source/FragmentShader.cpp
 	./source/ShaderManager.cpp
 	./source/ShaderProgram.cpp)
@@ -45,4 +48,4 @@ add_library(${PROJECT_NAME} STATIC ${PUBLIC_HEADER_FILES} ${${PROJECT_NAME}_SOUR
 
 target_include_directories(${PROJECT_NAME} PUBLIC ./public_header/ PRIVATE ./private_header/)
 
-target_link_libraries(${PROJECT_NAME} glfw GLEW::GLEW)
+target_link_libraries(${PROJECT_NAME} glfw GLEW::GLEW stb::stb)
